@@ -20,7 +20,7 @@ class DFT():
 
 
         # Apply mask and inverse DFT
-        fshift = np.fft.fftshift(cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)) * mask
+        fshift = np.fft.fftshift(cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT))* mask
         fshift_mask_mag = 2000 * np.log(cv2.magnitude(fshift[:, :, 0], fshift[:, :, 1]))
 
         f_ishift = np.fft.ifftshift(fshift)
@@ -74,9 +74,11 @@ class DFT():
 
     def showHPFTransform(self,r):
         plt.imshow(self.HPF(self.grayImg,r))
+        plt.title("Filtered above: "+str(np.abs(cv2.dft(np.float32(self.grayImg), flags=cv2.DFT_COMPLEX_OUTPUT)[r][r]))+"Hz")
         plt.show()
     def showLPFTransform(self,r):
         plt.imshow(self.LPF(self.grayImg,r))
+        plt.title("Filtered below: "+str(np.abs(cv2.dft(np.float32(self.grayImg), flags=cv2.DFT_COMPLEX_OUTPUT)[r][r]))+"Hz")
         plt.show()
     def showColorHPFTransform(self,lowR,highR):
         f = plt.figure(figsize=(12, 12))
@@ -86,18 +88,18 @@ class DFT():
             plt.imshow(self.colorHPF(inc*i))
             plt.xticks(ticks=[])
             plt.yticks(ticks=[])
-            plt.title(inc*i)
+            plt.title("Filtered above: "+str(np.abs(cv2.dft(np.float32(self.grayImg), flags=cv2.DFT_COMPLEX_OUTPUT)[int(inc*i)][int(inc*i)]))+"Hz")
         plt.show()
 
     def showColorLPFTransform(self,lowR,highR):
-        f = plt.figure(figsize=(12, 12))
+        f = plt.figure(figsize=(12, 24))
         inc = (highR-lowR)/10
         for i in range(0,10):
             f.add_subplot(2,5,i+1)
             plt.imshow(self.colorLPF(inc*i))
             plt.xticks(ticks=[])
             plt.yticks(ticks=[])
-            plt.title(inc*i)
+            plt.title("Filtered below: "+str(np.abs(cv2.dft(np.float32(self.grayImg), flags=cv2.DFT_COMPLEX_OUTPUT)[int(inc*i)][int(inc*i)]))+"Hz")
         plt.show()
 
     def showImg(self):
@@ -109,6 +111,6 @@ class DFT():
 Bonk = DFT('Bonk.jpeg')
 
 #Bonk.showImg()
-#Bonk.showHPFTransform(10)
+#Bonk.showHPFTransform(1)
 #Bonk.showLPFTransform(1)
-Bonk.showColorLPFTransform(0,10)
+Bonk.showColorHPFTransform(0,10)
